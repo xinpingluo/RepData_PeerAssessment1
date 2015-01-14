@@ -20,7 +20,7 @@ Plot steps per day
 ```{r}
 suppressWarnings(library(ggplot2))
 m <- ggplot(data_nona, aes(date, steps)) 
-m <- m + labs(title = "Steps per Day", y= 'Number of steps', x ='Date') + geom_bar(stat= 'identity')
+m <- m + labs(title = "Total number of Steps per Day (raw data)", y= 'Number of steps', x ='Date') + geom_bar(stat= 'identity')
 m
 
 ##Calculate mean and median steps per day
@@ -43,13 +43,17 @@ steps_interval <- aggregate(
                             , FUN=mean
                             , simplify =TRUE 
                           )
+
 n <- ggplot(steps_interval, aes(y=x, x=Group.1)) + geom_line ()
-n <- n + labs(title = "Average Steps per Interval", y= 'Number of steps', x ='Interval') 
+n <- n + labs(title = "Average Number of Steps per Interval (raw data)", y= 'Number of steps', x ='Interval') 
 n
 ```
+
 Maximum number of steps
 ```{r}
-steps_interval[steps_interval$x == max(steps_interval$x), ]
+max_steps <- steps_interval[steps_interval$x == max(steps_interval$x), ]
+names(max_steps) = c("interval", "mean_steps")
+max_steps
 ```
 
 ## Imputing missing values
@@ -71,7 +75,7 @@ for(i in 1:nrow(data_clean)) {
   }
 }
 o <- ggplot(data_clean, aes(date, steps)) 
-o <- m + labs(title = "Steps per Day", y= 'Number of steps', x ='Date') + geom_bar(stat= 'identity')
+o <- m + labs(title = "Total Number of Steps per Day (clean data)", y= 'Number of steps', x ='Date') + geom_bar(stat= 'identity')
 o
 
 totalsteps_clean <- aggregate(data_clean$steps, by = list(data_clean$date), FUN=sum, simplify=TRUE)
@@ -97,7 +101,7 @@ average_steps_clean <- aggregate (data_clean$steps
                                   , FUN=mean)
 
 p <- ggplot(average_steps_clean , aes(y=x, x=Group.1 )) + geom_line() + facet_grid(Group.2 ~ .)
-p <- p +  labs(title = "Comparison of Steps per Interval for weekday/weekends", y= 'Number of steps', x ='Interval') 
+p <- p +  labs(title = "Comparison of Steps per Interval between weekdays and weekend days", y= 'Number of steps', x ='Interval') 
 p
 
 ```
